@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <!--  vue和axios的引用  -->
+    <script src="bower_components/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+首頁加載中......請稍後
+</body>
+<script>
+    $(function () {
+        // 获得localStorage保存的用户的jwt
+        let token = window.localStorage.getItem("accessToken");
+        // 测试输出到浏览器控制台
+        console.log("token:" + token);
+        axios({
+            url:"http://localhost:9000/v1/home",
+            method:"get",
+            params:{
+                accessToken:token
+            }
+        }).then(function(response){
+            // HomeController类中返回的内容就是用户身份对应的首页的路径
+            // 也就是说response.data就是要访问的页面,我们使用js代码直接重定向
+            location.href=response.data;
+        })
+    })
+</script>
+</html>
