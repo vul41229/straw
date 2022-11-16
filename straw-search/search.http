@@ -1,0 +1,120 @@
+GET http://localhost:9200
+
+### ES分詞設定
+POST http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+  "text": "我是達內學員我熱愛學習",
+  "analyzer": "ik_smart"
+}
+### ES分詞設定
+POST http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+"text": "我是达内学员我热爱学习",
+"analyzer": "ik_max_word"
+}
+###建立索引
+PUT http://localhost:9200/quesytion
+###刪除索引列表
+DELETE http://localhost:9200/quesytion
+###查詢所有的索引
+GET http://localhost:9200/_cat/indices?v
+###向索引中添加文檔數據
+POST http://localhost:9200/questions/_create/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "JAVA基本類型有哪些",
+  "content": "在面試過程中基本類型這麼簡單的問題我們該怎麼回答"
+}
+###向索引中添加文檔數據
+POST http://localhost:9200/questions/_create/2
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "JAVA的集合問題",
+  "content": "集合的超級父類是誰,和map有甚麼關係"
+}
+###向索引中添加文檔數據
+POST http://localhost:9200/questions/_create/3
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "三大框架的問題",
+  "content": "三大框架的原理和關係是什麼"
+}
+###向索引中添加文檔數據
+POST http://localhost:9200/questions/_create/4
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "微服務項目重構問題",
+  "content": "在做項目重構時需要注意的點是什麼,用到了哪些新技術"
+}
+###刪除quesytion索引中的一個文檔
+DELETE http://localhost:9200/questions/_doc/1
+###更新文檔
+POST http://localhost:9200/questions/_doc/1/_update
+Content-Type: application/json
+
+{
+  "doc": {
+    "title": "八大基本類型都是什麼"
+  }
+}
+###讀取文檔
+GET http://localhost:9200/questions/_doc/1
+###全文檢索
+POST http://localhost:9200/questions/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match": {"title":"JAVA"}
+  }
+}
+###多字段搜索,bool表示進行複合查詢,should  (or)表示或者關係 ,must(and)表示並且的關係
+POST http://localhost:9200/questions/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {"match": {"title": "JAVA"}},
+        {"match": {"content": "類型"}}
+      ]
+    }
+  }
+}
+###條件搜索,查询用户11 或者 公开的 同时 标题或者内容中包含Java的问题
+POST http://localhost:9200/knows/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [{
+        "bool": {
+          "should": [
+          {"match": {"title": "java"}},
+          {"match": {"content": "java"}}]
+        }
+      }, {
+        "bool": {
+          "should": [
+          {"term": {"publicStatus": 1}},
+          {"term": {"userId": 11}}]
+        }
+      }]
+    }
+  }
+}
+
